@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <% include partials/head %>
+
+  </head>
+  <body>
+    
+    <% include partials/header %>
+      
+    <div class="container">
+      <h1>All Books</h1>
+      
+      <div class="book_grid">
+        <% for( var i = 0; i < books.length; i++ ) {%>
+          <div class="book_item" style="background-image: url('<%= books[i].thumbnail %>');">
+            <% if(isAuthenticated) { %>
+              <% if(books[i].added_by !== user.name && books[i].borrowed_by === '') { %>
+                <div data-purpose="ask_for_book" data-book_id="<%= books[i]._id %>" class="book_checker w3-button w3-green w3-hover-grey">Available</div>
+              <% } %>
+            <% } %>
+          </div>
+        <% } %>
+      </div>
+
+    </div>
+    <% if(isAuthenticated) { %>
+      <% for( var i = 0; i < books.length; i++ ) {%>
+        <% if(user.name === books[i].added_by && books[i].borrowed_by !== '') { %>
+          <% if(!books[i].borrowed) { %>
+              <input type="hidden" class="approve-trade">
+          <% break; } %>
+        <% } %>
+      <% } %>
+    <% } %>
+    
+    <% include partials/footer %>
+    
+  </body>
+  <script>
+    $(function() {
+      if ( $( ".approve-trade" ).length ) {
+        $( "#trade-menu-item" ).addClass( "alert-sign" );
+      }
+    });
+      
+    $('.book_grid').on('click', '.book_checker', function(e){
+      e.preventDefault();
+      $.post('/trade',
+      {
+        purpose: $( this ).attr('data-purpose'),
+        book_id: $( this ).attr('data-book_id')
+      },
+      function(data, status){
+        if(data === "ok"){
+          location.reload();
+        }
+      });
+    });
+  </script>
+</html>
+
+

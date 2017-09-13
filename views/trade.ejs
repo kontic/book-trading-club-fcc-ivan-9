@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <% include partials/head %>
+
+  </head>
+  <body>
+    
+    <% include partials/header %>
+      
+    <div class="container">
+      <h1>Trade Requests</h1>
+      
+      
+      
+      <div class="w3-container">
+      	<div class="w3-text-blue">
+          <h2>Your Trade Requests:</h2>
+        </div>
+        <ul class="w3-ul w3-card">
+          
+          <% for( var i = 0; i < books.length; i++ ) {%>
+            <% if(user.name === books[i].borrowed_by) { %>
+              <li class="w3-bar w3-padding-small">
+                <span data-book_id="<%= books[i]._id %>" class="decline-trade w3-padding-small w3-bar-item w3-button w3-white w3-text-red w3-xlarge w3-right">&#x2718;</span>
+                <div class="w3-bar-item">
+                  <span><%= books[i].book_name %></span>
+                </div>
+              </li>
+            <% } %>
+          <% } %>
+          
+        </ul>
+        
+        
+      
+      
+        <div class="w3-text-blue">
+          <h2>Trade Requests for You:</h2>
+        </div>
+        <ul class="w3-ul w3-card">
+          
+          <% for( var i = 0; i < books.length; i++ ) {%>
+            <% if(user.name === books[i].added_by && books[i].borrowed_by !== '') { %>
+              <% if(books[i].borrowed) { %>
+                <li class="w3-bar w3-padding-small">
+                  <span data-book_id="<%= books[i]._id %>" class="decline-trade w3-padding-small w3-bar-item w3-button w3-white w3-text-red w3-xlarge w3-right">&#x2718;</span>
+                  <div class="w3-bar-item">
+                    <span><%= books[i].book_name %></span>
+                  </div>
+                </li>
+              <% } else { %>
+                <li class="w3-bar w3-padding-small">
+                  <span data-book_id="<%= books[i]._id %>" class="approve-trade w3-padding-small w3-bar-item w3-button w3-white w3-text-green w3-xlarge w3-right">&#x2714;</span>
+                  <span data-book_id="<%= books[i]._id %>" class="decline-trade w3-padding-small w3-bar-item w3-button w3-white w3-text-red w3-xlarge w3-right">&#x2718;</span>
+                  <div class="w3-bar-item">
+                    <span><%= books[i].book_name %></span>
+                  </div>
+                </li>
+              <% } %>
+            <% } %>
+          <% } %>
+          
+        </ul>
+      </div>
+      
+      
+      
+    </div>
+    
+    <% include partials/footer %>
+    
+  </body>
+  <script>
+    $(function() {
+      
+      if ( $( ".approve-trade" ).length ) {
+        $( "#trade-menu-item" ).addClass( "alert-sign" );
+      }
+      
+      $('ul').on('click', '.approve-trade', function(e){
+        e.preventDefault();
+        $.post('/trade',
+        {
+          purpose: 'approve-trade',
+          book_id: $( this ).attr('data-book_id')
+        },
+        function(data, status){
+          if(data === "ok"){
+            location.reload();
+          }
+        });
+      });
+      
+      $('ul').on('click', '.decline-trade', function(e){
+        e.preventDefault();
+        $.post('/trade',
+        {
+          purpose: 'decline-trade',
+          book_id: $( this ).attr('data-book_id')
+        },
+        function(data, status){
+          if(data === "ok"){
+            location.reload();
+          }
+        });
+      });
+
+    });
+  
+    
+    
+    
+  </script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

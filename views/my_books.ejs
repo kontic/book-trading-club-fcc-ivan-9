@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <% include partials/head %>
+
+  </head>
+  <body>
+    
+    <% include partials/header %>
+      
+    <div class="container">
+      <h1>My Books</h1>
+      
+      <button id="add_new_book_btn" class="w3-button w3-blue w3-hover-light-gray">Add Book</button>
+    
+      <div id="new_book_modal" class="w3-modal w3-animate-opacity">
+        <div class="w3-modal-content w3-card-4 add-new-book-modal">
+          <header class="w3-container w3-light-gray"> 
+            <span onclick="document.getElementById('new_book_modal').style.display='none'" 
+            class="w3-button w3-large w3-display-topright">&times;</span>
+            <h2>Add New Book</h2>
+          </header>
+          <div class="w3-container">
+            <br>
+            <div class="w3-row-padding">
+              <form>
+                <input id="book_search_text" class="w3-input w3-border w3-padding w3-col m8 s8" type="text" placeholder="book name" name="book_name" required>
+                <input type="submit" id="book_search_btn" class="w3-button w3-blue w3-border w3-padding w3-col m4 s4" value="Search"></input>
+              </form>
+            </div>
+            
+            <div class="search_results">
+            </div>
+            <br>
+          </div>
+        </div>
+      </div>
+      <div class="book_grid">
+        <% for( var i = 0; i < books.length; i++ ) {%>
+            <div class="book_item" style="background-image: url('<%= books[i].thumbnail %>');"></div>
+        <% } %>
+      </div>
+
+    </div>
+    
+    <% for( var i = 0; i < books.length; i++ ) {%>
+      <% if(user.name === books[i].added_by && books[i].borrowed_by !== '') { %>
+        <% if(!books[i].borrowed) { %>
+            <input type="hidden" class="approve-trade">
+        <% break; } %>
+      <% } %>
+    <% } %>
+    
+    <% include partials/footer %>
+    
+  </body>
+  <script>
+    $(function(){
+      if ( $( ".approve-trade" ).length ) {
+        $( "#trade-menu-item" ).addClass( "alert-sign" );
+      }
+      
+      var search_api_url = "https://www.googleapis.com/books/v1/volumes?q=";
+
+      $('form').on('submit', function(e){
+        e.preventDefault();
+        var for_render = "<p>Click on correct book:</p>";
+        $.get(search_api_url + $('#book_search_text').val(), function(books) {
+          
+          var books_array = books.items;
+          var number_of_items = Object.keys(books_array).length;
+          if(number_of_items > 5) number_of_items = 5;
+          try {
+            for(var i = 0; i < number_of_items; i++){
+              for_render += "<a href='/add_book' data-book-name='" + books_array[i].volumeInfo.title + "' data-book-thumbnail=" + books_array[i].volumeInfo.imageLinks.smallThumbnail + "><div class='book_item' style='background-image: url(" + books_array[i].volumeInfo.imageLinks.smallThumbnail + ");'></div></a>"
+            }
+          }catch(err) {
+
+          }
+
+          $('.search_results').html(for_render);
+        }); 
+      });
+      
+      $('#book_search_btn').on('click', function(e){
+        
+      })
+      
+      $('#add_new_book_btn').on('click', function(e){
+        document.getElementById('new_book_modal').style.display='block';
+      });
+      
+      $('.search_results').on('click', 'a', function(e){
+        e.preventDefault();
+        var href_from_a = $( this ).attr('href');
+        $.post(href_from_a,
+        {
+          book_name: $( this ).attr('data-book-name'),
+          book_thumbnail: $( this ).attr('data-book-thumbnail')
+        },
+        function(data, status){
+            if(data = "ok"){
+              document.getElementById('new_book_modal').style.display='none';
+              location.reload();
+            }
+            
+        });
+      });
+    });
+  </script>
+</html>

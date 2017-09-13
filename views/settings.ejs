@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <% include partials/head %>
+
+  </head>
+  <body>
+    
+    <% include partials/header %>
+    
+    <div class="container">
+      <form class="w3-container" action="" method="post">
+        <p>      
+        <label class="w3-text-blue"><b>Full Name</b></label>
+        <input class="w3-input w3-border w3-white" type="text" name="fullname" placeholder="Full Name" value="<%= full_name %>" ></p>
+        <p>      
+        <label class="w3-text-blue"><b>State</b></label>
+        <input class="w3-input w3-border w3-white" type="text" name="state" placeholder="State" value="<%= state %>" ></p>
+        <p>      
+        <label class="w3-text-blue"><b>City</b></label>
+        <input class="w3-input w3-border w3-white" type="text" name="city" placeholder="City" value="<%= city %>" ></p>
+        <p>
+        <button class="w3-btn w3-blue">Save</button></p>
+      </form>
+    </div>
+    
+    <% include partials/footer %>
+
+  </body>
+</html>
