@@ -22,12 +22,21 @@
           
           <% for( var i = 0; i < books.length; i++ ) {%>
             <% if(user.name === books[i].borrowed_by) { %>
-              <li class="w3-bar w3-padding-small">
-                <span data-book_id="<%= books[i]._id %>" class="decline-trade w3-padding-small w3-bar-item w3-button w3-white w3-text-red w3-xlarge w3-right">&#x2718;</span>
-                <div class="w3-bar-item">
-                  <span><%= books[i].book_name %></span>
-                </div>
-              </li>
+              <% if(books[i].borrowed) { %>
+                <li class="w3-bar w3-padding-small w3-lime">
+                  <span data-book_id="<%= books[i]._id %>" class="decline-trade w3-padding-small w3-bar-item w3-button w3-lime w3-text-red w3-xlarge w3-right">&#x2718;</span>
+                  <div class="w3-bar-item">
+                    <span><%= books[i].book_name %></span>
+                  </div>
+                </li>
+              <% } else { %>
+                <li class="w3-bar w3-padding-small">
+                  <span data-book_id="<%= books[i]._id %>" class="decline-trade w3-padding-small w3-bar-item w3-button w3-white w3-text-red w3-xlarge w3-right">&#x2718;</span>
+                  <div class="w3-bar-item">
+                    <span><%= books[i].book_name %></span>
+                  </div>
+                </li>
+              <% } %>
             <% } %>
           <% } %>
           
